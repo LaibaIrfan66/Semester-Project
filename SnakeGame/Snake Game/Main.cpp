@@ -1,62 +1,41 @@
 #include <SFML/Graphics.hpp>
-#include <optional>
 #include <iostream>
+#include <string>
 #include <cstdlib>
 #include <ctime>
+#include <optional>
 using namespace std;
 using namespace sf;
-
-const int CELL = 20;
-const int COLS = 30;
-const int ROWS = 30;
-
-int fruitX;
-int fruitY;
-
-void placeFruit(int snakeX[], int snakeY[], int length)
-{
-    bool onSnake = true;
-
-    while (onSnake)
-    {
-        fruitX = rand() % COLS;
-        fruitY = rand() % ROWS;
-
-        onSnake = false;
-        for (int i = 0; i < length; i++)
-        {
-            if (snakeX[i] == fruitX && snakeY[i] == fruitY)
-                onSnake = true;
-        }
-    }
-}
 
 int main()
 {
     srand(time(0));
 
-    RenderWindow window(VideoMode({ COLS * CELL, ROWS * CELL }), "Snake Game");
+    RenderWindow window(VideoMode({ 600, 600 }), "Snake Game");
     window.setFramerateLimit(60);
 
     int snakeX[900];
     int snakeY[900];
     int length = 3;
 
-    snakeX[0] = 15;  snakeY[0] = 15;
-    snakeX[1] = 14;  snakeY[1] = 15;
-    snakeX[2] = 13;  snakeY[2] = 15;
+    snakeX[0] = 15;
+    snakeY[0] = 15;
+    snakeX[1] = 14;
+    snakeY[1] = 15;
+    snakeX[2] = 13;
+    snakeY[2] = 15;
 
     int dx = 1;
     int dy = 0;
     int score = 0;
 
-    placeFruit(snakeX, snakeY, length);
+    int fruitX = rand() % 30;
+    int fruitY = rand() % 30;
 
     Clock clock;
     float timer = 0;
-    float delay = 0.25f;
 
-    RectangleShape box(Vector2f(CELL - 1, CELL - 1));
+    RectangleShape box(Vector2f(19, 19));
 
     while (window.isOpen())
     {
@@ -66,7 +45,6 @@ int main()
                 window.close();
         }
 
-       
         if (Keyboard::isKeyPressed(Keyboard::Key::Up) && dy == 0)
         {
             dx = 0;
@@ -87,12 +65,13 @@ int main()
             dx = 1;
             dy = 0;
         }
-        timer += clock.restart().asSeconds();
-        if (timer >= delay)
+
+        timer = timer + clock.restart().asSeconds();
+
+        if (timer >= 0.2)
         {
             timer = 0;
 
-            
             int tailX = snakeX[length - 1];
             int tailY = snakeY[length - 1];
 
@@ -105,25 +84,26 @@ int main()
             snakeX[0] = snakeX[0] + dx;
             snakeY[0] = snakeY[0] + dy;
 
-            
             if (snakeX[0] == fruitX && snakeY[0] == fruitY)
             {
-                snakeX[length] = tailX;   
+                snakeX[length] = tailX;
                 snakeY[length] = tailY;
-                length++;
+                length = length + 1;
 
                 score = score + 10;
                 cout << "Score: " << score << endl;
 
-                placeFruit(snakeX, snakeY, length);
+                fruitX = rand() % 30;
+                fruitY = rand() % 30;
             }
         }
 
+        window.setTitle("Snake Game - Score: " + to_string(score));
+
         window.clear(Color(40, 40, 40));
 
-       
         box.setFillColor(Color::Red);
-        box.setPosition(Vector2f(fruitX * CELL, fruitY * CELL));
+        box.setPosition(Vector2f(fruitX * 20, fruitY * 20));
         window.draw(box);
 
         for (int i = 0; i < length; i++)
@@ -133,7 +113,7 @@ int main()
             else
                 box.setFillColor(Color(0, 150, 0));
 
-            box.setPosition(Vector2f(snakeX[i] * CELL, snakeY[i] * CELL));
+            box.setPosition(Vector2f(snakeX[i] * 20, snakeY[i] * 20));
             window.draw(box);
         }
 
