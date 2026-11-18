@@ -29,6 +29,9 @@ int main()
     int dy = 0;
     int score = 0;
 
+    bool gameOver = false;
+    bool levelComplete = false;
+
     int fruitX = rand() % 30;
     int fruitY = rand() % 30;
 
@@ -68,7 +71,7 @@ int main()
 
         timer = timer + clock.restart().asSeconds();
 
-        if (timer >= 0.2)
+        if (timer >= 0.2 && gameOver == false && levelComplete == false)
         {
             timer = 0;
 
@@ -84,7 +87,13 @@ int main()
             snakeX[0] = snakeX[0] + dx;
             snakeY[0] = snakeY[0] + dy;
 
-            if (snakeX[0] == fruitX && snakeY[0] == fruitY)
+            if (snakeX[0] < 0 || snakeX[0] >= 30 || snakeY[0] < 0 || snakeY[0] >= 30)
+            {
+                gameOver = true;
+                cout << "Game Over! Score: " << score << endl;
+            }
+
+            if (gameOver == false && snakeX[0] == fruitX && snakeY[0] == fruitY)
             {
                 snakeX[length] = tailX;
                 snakeY[length] = tailY;
@@ -95,26 +104,45 @@ int main()
 
                 fruitX = rand() % 30;
                 fruitY = rand() % 30;
+
+                if (score >= 90)
+                {
+                    levelComplete = true;
+                    cout << "Level 1 Complete!" << endl;
+                }
             }
         }
 
-        window.setTitle("Snake Game - Score: " + to_string(score));
+        if (gameOver == true)
+            window.setTitle("Snake Game - GAME OVER - Score: " + to_string(score));
+        else if (levelComplete == true)
+            window.setTitle("Snake Game - LEVEL 1 COMPLETE - Score: " + to_string(score));
+        else
+            window.setTitle("Snake Game - Level 1 - Score: " + to_string(score) + " / 90");
 
         window.clear(Color(40, 40, 40));
 
-        box.setFillColor(Color::Red);
-        box.setPosition(Vector2f(fruitX * 20, fruitY * 20));
-        window.draw(box);
+        if (levelComplete == false)
+        {
+            box.setFillColor(Color::Red);
+            box.setPosition(Vector2f(fruitX * 20, fruitY * 20));
+            window.draw(box);
+        }
 
         for (int i = 0; i < length; i++)
         {
-            if (i == 0)
+            if (gameOver == true)
+                box.setFillColor(Color(120, 120, 120));
+            else if (i == 0)
                 box.setFillColor(Color::Green);
             else
                 box.setFillColor(Color(0, 150, 0));
 
-            box.setPosition(Vector2f(snakeX[i] * 20, snakeY[i] * 20));
-            window.draw(box);
+            if (snakeX[i] >= 0 && snakeX[i] < 30 && snakeY[i] >= 0 && snakeY[i] < 30)
+            {
+                box.setPosition(Vector2f(snakeX[i] * 20, snakeY[i] * 20));
+                window.draw(box);
+            }
         }
 
         window.display();
