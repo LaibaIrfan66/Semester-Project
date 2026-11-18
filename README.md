@@ -10,7 +10,7 @@ Author: Laiba Irfan
 
 The player moves a snake around the screen using the arrow keys. The snake eats fruit and grows. The game will have 4 levels, and each level has a new rule.
 
-- Level 1: Basic game. The game ends if the snake hits the boundary. Score 200 to go to the next level.
+- Level 1: Basic game. The game ends if the snake hits the boundary. Score 90 to go to the next level.
 - Level 2: A black fruit appears. If the snake eats it, the game ends.
 - Level 3: The snake's speed increases slowly.
 - Level 4: The game also ends if the snake hits its own tail.
