@@ -24,6 +24,16 @@ bool onSnake(int x, int y, int snakeX[], int snakeY[], int length)
     return false;
 }
 
+float level3(int score)
+{
+    float delay = 0.2f - score * 0.001f;
+
+    if (delay < 0.08f)
+        delay = 0.08f;
+
+    return delay;
+}
+
 int main()
 {
     srand(time(0));
@@ -58,6 +68,7 @@ int main()
 
     Clock clock;
     float timer = 0;
+    float delay = 0.2f;
 
     RectangleShape box(Vector2f(19, 19));
 
@@ -90,9 +101,13 @@ int main()
             dy = 0;
         }
 
+        delay = 0.2f;
+        if (level == 3)
+            delay = level3(score);
+
         timer = timer + clock.restart().asSeconds();
 
-        if (timer >= 0.2 && gameOver == false && levelComplete == false)
+        if (timer >= delay && gameOver == false && levelComplete == false)
         {
             timer = 0;
 
@@ -114,7 +129,7 @@ int main()
                 cout << "Game Over! Score: " << score << endl;
             }
 
-            if (gameOver == false && level == 2 && hitBlackFruit(snakeX[0], snakeY[0], blackX, blackY))
+            if (gameOver == false && level >= 2 && hitBlackFruit(snakeX[0], snakeY[0], blackX, blackY))
             {
                 gameOver = true;
                 cout << "Black fruit eaten! Game Over! Score: " << score << endl;
@@ -152,13 +167,31 @@ int main()
 
                         needBlack = true;
                     }
+                    else if (level == 2)
+                    {
+                        level = 3;
+                        cout << "Level 2 Complete! Level 3 starts" << endl;
+
+                        length = 3;
+                        snakeX[0] = 15;
+                        snakeY[0] = 15;
+                        snakeX[1] = 14;
+                        snakeY[1] = 15;
+                        snakeX[2] = 13;
+                        snakeY[2] = 15;
+                        dx = 1;
+                        dy = 0;
+                        score = 0;
+
+                        needBlack = true;
+                    }
                     else
                     {
                         levelComplete = true;
-                        cout << "Level 2 Complete!" << endl;
+                        cout << "Level 3 Complete!" << endl;
                     }
                 }
-                else if (level == 2)
+                else if (level >= 2)
                 {
                     needBlack = true;
                 }
@@ -179,7 +212,7 @@ int main()
         if (gameOver == true)
             window.setTitle("Snake Game - GAME OVER - Score: " + to_string(score));
         else if (levelComplete == true)
-            window.setTitle("Snake Game - LEVEL 2 COMPLETE - Score: " + to_string(score));
+            window.setTitle("Snake Game - LEVEL 3 COMPLETE - Score: " + to_string(score));
         else
             window.setTitle("Snake Game - Level " + to_string(level) + " - Score: " + to_string(score) + " / 90");
 
@@ -192,7 +225,7 @@ int main()
             window.draw(box);
         }
 
-        if (level == 2 && levelComplete == false)
+        if (level >= 2 && levelComplete == false)
         {
             box.setFillColor(Color::Black);
             box.setPosition(Vector2f(blackX * 20, blackY * 20));
