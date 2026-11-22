@@ -34,6 +34,16 @@ float level3(int score)
     return delay;
 }
 
+bool level4(int headX, int headY, int snakeX[], int snakeY[], int length)
+{
+    for (int i = 1; i < length; i++)
+    {
+        if (snakeX[i] == headX && snakeY[i] == headY)
+            return true;
+    }
+    return false;
+}
+
 int main()
 {
     srand(time(0));
@@ -101,8 +111,31 @@ int main()
             dy = 0;
         }
 
+        if (Keyboard::isKeyPressed(Keyboard::Key::R) && (gameOver == true || levelComplete == true))
+        {
+            length = 3;
+            snakeX[0] = 15;
+            snakeY[0] = 15;
+            snakeX[1] = 14;
+            snakeY[1] = 15;
+            snakeX[2] = 13;
+            snakeY[2] = 15;
+            dx = 1;
+            dy = 0;
+            score = 0;
+            level = 1;
+            gameOver = false;
+            levelComplete = false;
+            needBlack = false;
+            fruitX = rand() % 30;
+            fruitY = rand() % 30;
+            blackX = -1;
+            blackY = -1;
+            timer = 0;
+        }
+
         delay = 0.2f;
-        if (level == 3)
+        if (level >= 3)
             delay = level3(score);
 
         timer = timer + clock.restart().asSeconds();
@@ -133,6 +166,12 @@ int main()
             {
                 gameOver = true;
                 cout << "Black fruit eaten! Game Over! Score: " << score << endl;
+            }
+
+            if (gameOver == false && level == 4 && level4(snakeX[0], snakeY[0], snakeX, snakeY, length))
+            {
+                gameOver = true;
+                cout << "Tail hit! Game Over! Score: " << score << endl;
             }
 
             if (gameOver == false && snakeX[0] == fruitX && snakeY[0] == fruitY)
@@ -185,10 +224,28 @@ int main()
 
                         needBlack = true;
                     }
+                    else if (level == 3)
+                    {
+                        level = 4;
+                        cout << "Level 3 Complete! Level 4 starts" << endl;
+
+                        length = 3;
+                        snakeX[0] = 15;
+                        snakeY[0] = 15;
+                        snakeX[1] = 14;
+                        snakeY[1] = 15;
+                        snakeX[2] = 13;
+                        snakeY[2] = 15;
+                        dx = 1;
+                        dy = 0;
+                        score = 0;
+
+                        needBlack = true;
+                    }
                     else
                     {
                         levelComplete = true;
-                        cout << "Level 3 Complete!" << endl;
+                        cout << "Level 4 Complete! You Win!" << endl;
                     }
                 }
                 else if (level >= 2)
@@ -210,9 +267,9 @@ int main()
         }
 
         if (gameOver == true)
-            window.setTitle("Snake Game - GAME OVER - Score: " + to_string(score));
+            window.setTitle("Snake Game - GAME OVER - Score: " + to_string(score) + " - Press R to restart");
         else if (levelComplete == true)
-            window.setTitle("Snake Game - LEVEL 3 COMPLETE - Score: " + to_string(score));
+            window.setTitle("Snake Game - YOU WIN! - Press R to restart");
         else
             window.setTitle("Snake Game - Level " + to_string(level) + " - Score: " + to_string(score) + " / 90");
 
