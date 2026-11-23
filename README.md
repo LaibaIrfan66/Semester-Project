@@ -1,36 +1,49 @@
-# Semester-Project
-2D Snake game in C++ using SFML
 # Snake Game
 
-This is a 2D Snake game made in C++ using SFML. It is my semester project for Programming Fundamentals.
+This is my semester project for Programming Fundamentals. It is a 2D Snake game made in C++ using SFML in Visual Studio.
 
-Author: Laiba Irfan
+Made by:Laiba Irfan
 
 ## About the game
 
-The player moves a snake around the screen using the arrow keys. The snake eats fruit and grows. The game will have 4 levels, and each level has a new rule.
+The player moves a snake around the screen and eats fruit to grow and score points. The game has 4 levels, and each level adds a new rule. The player needs 90 points to finish a level.
 
-- Level 1: Basic game. The game ends if the snake hits the boundary. Score 90 to go to the next level.
+## Controls
+
+- Arrow keys: move the snake
+- R: restart the game after game over or after winning
+
+## Features
+
+- 4 levels, each with a new rule
+- Red fruit gives 10 points and makes the snake longer
+- The score and level are shown in the title of the game window
+- The game restarts from Level 1 when you press R
+
+## The levels
+
+- Level 1: Normal game. The game ends if the snake hits the boundary.
 - Level 2: A black fruit appears. If the snake eats it, the game ends.
-- Level 3: The snake's speed increases slowly.
+- Level 3: The snake gets faster every time it eats a fruit.
 - Level 4: The game also ends if the snake hits its own tail.
 
-## What is done so far
+## What I used
 
-- Set up Visual Studio with SFML
-- Made the game window
-- Drew the snake on a grid
-- Made the snake move with the arrow keys
+- C++
+- SFML 3.1.0
+- Visual Studio 2026
+- GitHub
 
+## How to compile and run
 
-## How the code works
-
-- The window is 600 x 600 pixels and is divided into a 30 x 30 grid.
-- The snake is stored in two arrays, one for x positions and one for y positions.
-- A loop moves each part of the snake to the place of the part in front of it. Then the head moves one square.
-- A timer controls the speed of the snake.
-- the arrow keys are used to move the snake.
-
-## Tools used
-
-C++, SFML 3.1.0, Visual Studio 2026, GitHub
+1. Install Visual Studio 2022 with the "Desktop development with C++" option.
+2. Download SFML 3.1.0 (Visual C++ 17, 64-bit) from sfml-dev.org and extract it to C:\SFML. Check that C:\SFML\include and C:\SFML\lib exist.
+3. Open SnakeGame/Snake Game.slnx in Visual Studio.
+4. At the top, set the configuration to Debug and x64.
+5. The project settings are already saved, but if there are errors, check these in the project Properties:
+   - C/C++ > General > Additional Include Directories: C:\SFML\include
+   - Linker > General > Additional Library Directories: C:\SFML\lib
+   - C/C++ > Language > C++ Language Standard: ISO C++17
+   - Linker > Input > Additional Dependencies: sfml-graphics-d.lib, sfml-window-d.lib, sfml-system-d.lib
+6. Copy sfml-graphics-d-3.dll, sfml-window-d-3.dll and sfml-system-d-3.dll from C:\SFML\bin into the folder where the .exe is built (SnakeGame\x64\Debug).
+7. Press F5 to run the game.
