@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <cstdlib>
 #include <ctime>
@@ -26,7 +27,7 @@ bool onSnake(int x, int y, int snakeX[], int snakeY[], int length)
 
 float level3(int score)
 {
-    float delay = 0.2f - score * 0.001f;
+    float delay = 0.25f - score * 0.001f;
 
     if (delay < 0.08f)
         delay = 0.08f;
@@ -66,10 +67,13 @@ int main()
     int dy = 0;
     int score = 0;
     int level = 1;
+    int highScore = 0;
+    int total = 0;
 
     bool gameOver = false;
     bool levelComplete = false;
     bool needBlack = false;
+    bool saved = false;
 
     int fruitX = rand() % 30;
     int fruitY = rand() % 30;
@@ -78,9 +82,25 @@ int main()
 
     Clock clock;
     float timer = 0;
-    float delay = 0.2f;
+    float delay = 0.25f;
 
     RectangleShape box(Vector2f(19, 19));
+
+    ifstream inFile("highscore.txt");
+    if (inFile.is_open())
+    {
+        inFile >> highScore;
+        inFile.close();
+    }
+
+    int board[30][30];
+    for (int row = 0; row < 30; row++)
+    {
+        for (int col = 0; col < 30; col++)
+        {
+            board[row][col] = 1;
+        }
+    }
 
     while (window.isOpen())
     {
@@ -124,7 +144,9 @@ int main()
             dy = 0;
             score = 0;
             level = 1;
+            total = 0;
             gameOver = false;
+            saved = false;
             levelComplete = false;
             needBlack = false;
             fruitX = rand() % 30;
@@ -134,7 +156,7 @@ int main()
             timer = 0;
         }
 
-        delay = 0.2f;
+        delay = 0.25f;
         if (level >= 3)
             delay = level3(score);
 
@@ -181,6 +203,7 @@ int main()
                 length = length + 1;
 
                 score = score + 10;
+                total = total + 10;
                 cout << "Score: " << score << endl;
 
                 fruitX = rand() % 30;
@@ -266,6 +289,19 @@ int main()
             }
         }
 
+        if ((gameOver == true || levelComplete == true) && saved == false)
+        {
+            if (total > highScore)
+            {
+                highScore = total;
+                ofstream outFile("highscore.txt");
+                outFile << highScore;
+                outFile.close();
+            }
+            saved = true;
+            cout << "High Score: " << highScore << endl;
+        }
+
         if (gameOver == true)
             window.setTitle("Snake Game - GAME OVER - Score: " + to_string(score) + " - Press R to restart");
         else if (levelComplete == true)
@@ -274,6 +310,19 @@ int main()
             window.setTitle("Snake Game - Level " + to_string(level) + " - Score: " + to_string(score) + " / 90");
 
         window.clear(Color(70, 70, 70));
+
+        for (int row = 0; row < 30; row++)
+        {
+            for (int col = 0; col < 30; col++)
+            {
+                if (board[row][col] == 1)
+                {
+                    box.setFillColor(Color(255, 235, 120));
+                    box.setPosition(Vector2f(col * 20, row * 20));
+                    window.draw(box);
+                }
+            }
+        }
 
         if (levelComplete == false)
         {
